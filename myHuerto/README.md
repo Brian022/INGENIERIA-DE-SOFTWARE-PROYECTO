@@ -1,61 +1,357 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# MyHuerto
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+My Huerto es una plataforma web la cual se enfoca en ofrecer productos para que cualquier persona con o sin conocimientos pueda crear su propio huerto en casa.
 
-## About Laravel
+# Integrantes
+Luis Armando Sihuinta Perez
+Brian Emanuel Silva Corrales
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Software
+Laragon Full 4.0.16
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Arquitectura
+El proyecto MyHuerto funciona con la arquitectura MVC
 
-## Learning Laravel
+1-. Vista: Estas fueron creadas con HTML, CSS, JAVASCRIPT. Hay 3 vistas principales
+  - Pagina principal
+  - Login 
+  - Registro de productos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2-. Controlador: Este funciona con PHP respondiendo a las peticiones de las vistas.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3-. Modelo: Estos son creados en PHP con la ayuda del ORM Eloquent
+  - Producto
+  - Usario
+  - Proveedor
 
-## Laravel Sponsors
+# Estilos de programación
+1-. Things: Con la ayuda de Eloquent tratando nuestra bd como objetos usamos este estilo POO.
+    ```php
+        <?php
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+        namespace App\Http\Controllers;
 
-### Premium Partners
+        use App\Producto
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+        use Illuminate\Http\Request;
 
-## Contributing
+        class AddController extends Controller
+        {
+            //Eloquent trata al modelo en minusculas y  lo pluraliza
+            //protected $table = 'productos';
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+            public function index()
+            {
+                return view('productos.index',
+                    ['productos' => Producto::latest()->paginate()]);
+            }
 
-## Code of Conduct
+            public function show(Producto $productos)
+            {
+                return view('productos.show',
+                    ['producto' => $producto]);
+            }
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+            public function crear()
+            {
+                return view('productos.create');
+            }
 
-## Security Vulnerabilities
+            public function guardar()
+            {
+                Producto::crear
+                ([
+                    'idproducto' => request('idproducto'),
+                    'idproveedor' => request('idproveedor'),
+                    'nombre' => request('nombre'),
+                    'precio' => request('precio'),
+                    'stock' => request('stock'),
+                    'descripcion' => request('descripcion'), 
+                ]);
+            }
+        }
+    ```
+2-. Trinity: La arquitectura del proyecto es un MVC nos apoyamos en laragon el ORM eloquent y controladores para tener ordenado nuestro MVC
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+# Principios SOLID
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Single Responsability Principle (SRP)
+- El principio de responsabilidad única se basa en que cada clase o método sólo debe hacer una cosa, sencilla y concreta. Si un objeto tiene un sólo cometido, éste será más fácil de mantener.
+```php
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+class LoginController extends Controller
+{
+
+    use AuthenticatesUsers;
+    
+    protected $redirectTo = '/';
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+}
+
+```
+
+```php
+<?php
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use App\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+class RegisterController extends Controller
+{
+
+    use RegistersUsers;
+
+    protected $redirectTo = '/myhuerto';
+
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
+
+    protected function create(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+    }
+}
+```
+```php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Producto
+
+        use Illuminate\Http\Request;
+
+        class AddController extends Controller
+        {
+            //Eloquent trata al modelo en minusculas y  lo pluraliza
+            //protected $table = 'productos';
+
+            public function index()
+            {
+                return view('productos.index',
+                    ['productos' => Producto::latest()->paginate()]);
+            }
+
+            public function show(Producto $productos)
+            {
+                return view('productos.show',
+                    ['producto' => $producto]);
+            }
+
+            public function crear()
+            {
+                return view('productos.create');
+            }
+
+            public function guardar()
+            {
+                Producto::crear
+                ([
+                    'idproducto' => request('idproducto'),
+                    'idproveedor' => request('idproveedor'),
+                    'nombre' => request('nombre'),
+                    'precio' => request('precio'),
+                    'stock' => request('stock'),
+                    'descripcion' => request('descripcion'), 
+                ]);
+            }
+        }
+```
+Open Closed
+Software entities (classes, modules, functions, etc…) should be open for extension but closed for modification
+
+```php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Producto
+
+        use Illuminate\Http\Request;
+
+        class AddController extends Controller
+        {
+            //Eloquent trata al modelo en minusculas y  lo pluraliza
+            //protected $table = 'productos';
+
+            public function index()
+            {
+                return view('productos.index',
+                    ['productos' => Producto::latest()->paginate()]);
+            }
+
+            public function show(Producto $productos)
+            {
+                return view('productos.show',
+                    ['producto' => $producto]);
+            }
+
+            public function crear()
+            {
+                return view('productos.create');
+            }
+
+            public function guardar()
+            {
+                Producto::crear
+                ([
+                    'idproducto' => request('idproducto'),
+                    'idproveedor' => request('idproveedor'),
+                    'nombre' => request('nombre'),
+                    'precio' => request('precio'),
+                    'stock' => request('stock'),
+                    'descripcion' => request('descripcion'), 
+                ]);
+            }
+        }
+ ```
+    
+Interface Segregation Principle
+
+Cada interface tendrá una única responsabilidad. Es preferible tener muchas interfaces que contengan pocos métodos que tener un interface con muchos métodos.
+
+```html
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>@yield('title', 'MyHuerto')</title>
+    <link rel="stylesheet" href="/css/CssHuerto.css">
+    <script src="/js/javascr.js"></script>
+</head>
+<body>
+    <header class="principal">
+        <span id="titulo">MyHuerto</span>
+        @section('view')
+            
+        @show
+    </header>
+    <div class="slider" id="main-slider">
+    <div class="slider-wrapper">
+        <img src="/img/slide1.png" alt="First" class="slide" />
+        <img src="/img/slide2.png" alt="Second" class="slide" />
+        <img src="/img/slide3.png" alt="Third" class="slide" />
+    </div>
+    </div>  
+    <div id="containerp">
+        <div id="subtitle"><a> Nuestros Productos</a></div>
+
+        <div class="container">
+            <img src="/img/girasol.jpg"  class="image">
+            <div class="overlay">
+
+                <div class="text"><a>Girasoles</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/rosasRojas.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Rosas Rojas</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/azada.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Azada</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/manguera.jpg"  class="image" >
+            <div class="overlay">
+                <div class="text"><a>Manguera</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/regadera.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Regadera</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/serrucho.jpg"  class="image" >
+            <div class="overlay">
+                <div class="text"><a>Serrucho de Poda</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/tijera.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Tijera de poda</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/fresa.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Semilla de fresa</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/bonsai.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Bonsai</a></div>
+            </div>
+        </div>
+        <div class="container">
+            <img src="/img/guantes.jpg"  class="image" >
+            <div class="overlay">
+                
+                <div class="text"><a>Guantes</a></div>
+            </div>
+        </div>
+    </div>
+    <div><footer id="pie"><small>Derechos reservados © 2018-2018</footer>
+</body>
+</html>
+```
+
+```html
+@extends('layout')
+
+@section('title', 'MyHuerto')
+
+@section('view')
+	    <li><a href={{route('login')}}>Login</a></li>
+@endsection
+```
